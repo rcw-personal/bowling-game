@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 public final class BowlingPlugin implements Plugin<Project> {
     @Override
     public void apply(@Nonnull Project project) {
-        System.out.println("hello world");
         project.getTasks().register("generateTests", GenerateTests.class);
     }
 }

@@ -20,12 +20,43 @@ public class GenerateTests extends DefaultTask {
 
     private static class Frame {
         public List<Turn> turns = new ArrayList<>();
-        private int maxTurnCount;
-        public boolean bonus;
 
-        public Frame(int turnCount, boolean bonus) {
-            this.maxTurnCount = turnCount;
-            this.bonus = bonus;
+        public String simulate(int maxTurnCount, int pinCount, boolean bonus) {
+            StringBuilder stringBuilder = new StringBuilder();
+            int pins = pinCount;
+            boolean open = true;
+            for (int turns = 0; turns < maxTurnCount && (open || bonus); turns++) {
+                Turn turn = new Turn();
+                // nextInt is inclusive, exclusive. We wish to include
+                // the numbers between 0 through 10. 0 being a miss,
+                // 10 being a strike
+                turn.pinsHit = RANDOM.nextInt(pins + 1);
+                // subtract from pins
+                pins -= turn.pinsHit;
+
+                if (pins == 0) {
+                    // the pins remaining is zero which means we either got a strike or spare
+                    turn.result = turns == 0 ? STRIKE : SPARE;
+                    open = bonus;
+                    stringBuilder.append(turn.result);
+
+                    if (bonus && turn.result == STRIKE) {
+                        // reset the pins
+                        pins = pinCount;
+                    }
+                } else if (turn.pinsHit == 0) {
+                    // we hit zero pins which results in a miss
+                    turn.result = MISS;
+                    stringBuilder.append(MISS);
+                } else {
+                    // rather hacky/crude way of representing result
+                    turn.result = Integer.valueOf(turn.pinsHit).toString().charAt(0);
+                    stringBuilder.append(turn.pinsHit);
+                }
+
+                this.turns.add(turn); // add this turn
+            }
+            return stringBuilder.toString();
         }
     }
 
@@ -55,92 +86,30 @@ public class GenerateTests extends DefaultTask {
             IntStream.range(0, count).forEach((i) -> {
                 final StringBuilder stringBuilder = new StringBuilder();
                 // generate a random game
-                int turnCount = 2;
-                boolean bonus = false;
                 int totalFrames = 10;
 
-               for (int frameCount = 0; frameCount < totalFrames; frameCount++) {
-                    int pins = 10;
-                    boolean open = true;
+                for (int frameCount = 0; frameCount < totalFrames; frameCount++) {
+                    Frame frame = new Frame();
 
-                    Frame frame = new Frame(turnCount, bonus);
+                    // we could do like a frame.simulate(turnCount, pinCOunt);
+                    stringBuilder.append(frame.simulate(2, 10, false));
 
-                    for (int turns = 0; turns < frame.maxTurnCount; turns++) {
-                        Turn turn = new Turn();
-                        // nextInt is inclusive, exclusive. We wish to include
-                        // the numbers between 0 through 10. 0 being a miss,
-                        // 10 being a strike
-                        turn.pinsHit = RANDOM.nextInt(pins + 1);
-                        // subtract from pins
-                        pins -= turn.pinsHit;
+                    stringBuilder.append(FRAME_BOUNDARY);
 
-                        if (pins == 0) {
-                            // the pins remaining is zero which means we either got a strike or spare
-                            turn.result = turns == 0 ? STRIKE : SPARE;
-                            open = false;
-                            stringBuilder.append(turn.result);
-                        } else if (turn.pinsHit == 0) {
-                            // we hit zero pins which results in a miss
-                            turn.result = MISS;
-                            stringBuilder.append(MISS);
-                        } else {
-                            // rather hacky/crude way of representing result
-                            turn.result = Integer.valueOf(turn.pinsHit).toString().charAt(0);
-                            stringBuilder.append(turn.pinsHit);
+                    if (frameCount == totalFrames - 1) {
+                        stringBuilder.append(FRAME_BOUNDARY); // append the last frame boundary
+
+                        Turn lastTurn = frame.turns.get(frame.turns.size() - 1); // get the last turn for this final frame.
+
+                        if (lastTurn.result == STRIKE) {
+                            // the last result was a strike, two extra turns in the frame
+                            stringBuilder.append(frame.simulate(2, 10, true));
+                        } else if (lastTurn.result == SPARE) {
+                            // they will get one turn
+                            stringBuilder.append(frame.simulate(1, 10, true));
                         }
 
-                        frame.turns.add(turn); // add this turn
-
-
-                        if (frameCount==totalFrames-1 && turns==frame.maxTurnCount-1 && !bonus) {
-                            System.out.println(turns + ", " + (frame.maxTurnCount-1) + ", " + turn.result);
-                            if (turn.result == SPARE) {
-                                frame.maxTurnCount += 1;
-                                bonus = true; // we are now entering a bonus turn
-                                open = true;
-                                pins = 10;
-                            } else if (turn.result == STRIKE) {
-                                frame.maxTurnCount += 2;
-                                open = true;
-                                bonus = true; // we are now entering a bonus turn
-                                pins = 10;
-                            }
-
-                            System.out.println(frame.maxTurnCount);
-                            stringBuilder.append("||");
-                        } else if (!open) {
-                            break;
-                        }
                     }
-
-                    if (frameCount<totalFrames-1) {
-                        stringBuilder.append(FRAME_BOUNDARY);
-                    }
-
-//                    if (frameCount == totalFrames && !frame.bonus) {
-//                        // it seems like you append this last one, regardless of
-//                        // a bonus turn or not
-//                        stringBuilder.append(FRAME_BOUNDARY);
-//                        Frame peeked = lastResults.peek();
-//                        if (peeked != null) {
-//                            System.out.println(peeked.turns.get(peeked.turns.size() - 1).result);
-//                            switch (peeked.turns.get(peeked.turns.size() - 1).result) {
-//                                case SPARE:
-//                                    totalFrames += 1;
-//                                    turnCount = 1;
-//                                    bonus = true;
-//                                    break;
-//                                case STRIKE:
-//                                    totalFrames+=1;
-//                                    System.out.println("strike");
-//                                    turnCount+=1;
-//                                    bonus = true;
-//                                    break;
-//                                default:
-//                                    break;
-//                            }
-//                        }
-//                    }
                 }
 
                 try {
