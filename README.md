@@ -15,7 +15,8 @@ You can execute this gradle task through:
 The count flag is optional and defaults to `10,000` test cases.
 
 The second is the main code & unit tests which implement the necessary code.
-###Objective
+
+### Objective
 `Write a program to score a game of Ten-Pin Bowling.`
 ```
 Input: string (described below) representing a bowling game
