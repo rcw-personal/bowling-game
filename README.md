@@ -1,4 +1,4 @@
-Bowling Game
+Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg)
 --
 
 This is my repository for the bowling game coding assessment at High5Games.
