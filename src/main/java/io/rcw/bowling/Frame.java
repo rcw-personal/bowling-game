@@ -2,8 +2,15 @@ package io.rcw.bowling;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Frame {
+
+    private static final Predicate<Turn> ANY = (turn) -> true;
+
+
+    private Frame next;
     private List<Turn> turns;
     private boolean strike = false;
     private boolean spare = false;
@@ -12,6 +19,14 @@ public class Frame {
         this.turns = new ArrayList<>();
     }
 
+
+    public void setNext(Frame frame) {
+        this.next = frame;
+    }
+
+    public Optional<Frame> next() {
+        return Optional.ofNullable(next);
+    }
 
     public void addTurn(Turn turn) {
         this.turns.add(turn);
@@ -32,7 +47,15 @@ public class Frame {
 
     // Score returns the frames score
     public int score() {
-        return turns.stream().mapToInt(Turn::getPinsHit).sum();
+        return this.score(ANY);
+    }
+
+    public int limitScore(int turnCount) {
+        return turns.stream().limit(turnCount).mapToInt(Turn::getPinsHit).sum();
+    }
+
+    public int score(Predicate<Turn> filter) {
+        return turns.stream().filter(filter).mapToInt(Turn::getPinsHit).sum();
     }
 
     /**

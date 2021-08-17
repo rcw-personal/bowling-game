@@ -41,7 +41,7 @@ public final class GameParser {
                         // add the last frame
                         frames.add(currentFrame);
                         // create a new frame
-                        currentFrame = new Frame();
+                        currentFrame.setNext(currentFrame = new Frame());
                         lastTurn = null;
                     }
                     continue;
