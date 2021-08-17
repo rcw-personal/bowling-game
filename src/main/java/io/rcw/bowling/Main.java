@@ -11,15 +11,13 @@ public class Main {
         //Read from STDIN
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
-        int count = 0;
         while (scanner.hasNextLine()) {
-            count++;
             String line = scanner.nextLine();
 
             try {
                 Game game = GameParser.parse(line);
                 if (game.isValid()) {
-                    System.out.println(count + " " + game.calculateScore());
+                    System.out.println(game.calculateScore());
                 }
             } catch (GameParseException e) {
                 // ignore with invalid line
