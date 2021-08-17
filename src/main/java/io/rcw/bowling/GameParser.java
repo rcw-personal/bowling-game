@@ -54,10 +54,9 @@ public final class GameParser {
             }
 
 
-            currentFrame.addTurn(lastTurn = new Turn(result, pinsHit));
-
-            System.out.println("frame size " +  currentFrame.turns().size());
-
+            lastTurn = new Turn(result, pinsHit);
+            lastTurn.setBonus(bonus);
+            currentFrame.addTurn(lastTurn);
         }
 
         return new Game(frames);
