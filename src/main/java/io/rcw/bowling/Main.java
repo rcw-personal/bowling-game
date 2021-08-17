@@ -11,17 +11,22 @@ public class Main {
         //Read from STDIN
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
-        while (scanner.hasNext()) {
+        int count = 0;
+        while (scanner.hasNextLine()) {
+            count++;
             String line = scanner.nextLine();
 
             try {
                 Game game = GameParser.parse(line);
                 if (game.isValid()) {
-                    System.out.println(game.calculateScore());
+                    System.out.println(count + " " + game.calculateScore());
                 }
             } catch (GameParseException e) {
                 // ignore with invalid line
-                System.err.println("invalid game.");
+                if (line.isBlank() || line.isEmpty() || line.charAt(0) == 0x00) {
+                    break;
+                }
+                System.out.println("Invalid game.");
             }
         }
     }

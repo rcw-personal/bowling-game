@@ -119,6 +119,8 @@ public class GenerateTests extends DefaultTask {
                 }
             });
 
+            writer.write(0x00);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
