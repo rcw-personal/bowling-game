@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Game represents a played game.
  */
 public final class Game {
+
     private static final int TEN_PINS = 10;
     private static final int MAX_SCORE = 300;
 
@@ -18,6 +19,24 @@ public final class Game {
 
     public Game(List<Frame> frames) {
         this.frames = frames;
+    }
+
+
+    /**
+     * Returns if the game is valid or not. For sake of simplicity, I consider 10 FRAMES to be valid.
+     *
+     * @return if the game is valid
+     */
+    public boolean isValid() {
+        return frames.size() == MAX_FRAMES;
+    }
+
+    /**
+     * Gets frames
+     * @return the frames from the game
+     */
+    public List<Frame> getFrames() {
+        return frames;
     }
 
     public int calculateScore() {

@@ -5,7 +5,13 @@ import java.util.List;
 
 public final class GameParser {
 
-    public static Game parse(String line) {
+    /**
+     * This function parses a Game
+     * @param line
+     * @return
+     * @throws GameParseException
+     */
+    public static Game parse(String line) throws GameParseException {
         List<Frame> frames = new ArrayList<>();
 
         Frame currentFrame = new Frame();
@@ -48,8 +54,12 @@ public final class GameParser {
                 }
                 case '-' -> result = Result.MISS;
                 default -> {
-                    pinsHit = Integer.parseInt(String.valueOf(at));
-                    result = Result.SCORE;
+                    try {
+                        pinsHit = Integer.parseInt(String.valueOf(at));
+                        result = Result.SCORE;
+                    } catch (NumberFormatException exception) {
+                        throw new GameParseException("Invalid character while parsing.");
+                    }
                 }
             }
 

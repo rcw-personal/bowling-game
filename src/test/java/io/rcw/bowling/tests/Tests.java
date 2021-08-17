@@ -1,6 +1,7 @@
 package io.rcw.bowling.tests;
 
 import io.rcw.bowling.Game;
+import io.rcw.bowling.GameParseException;
 import io.rcw.bowling.GameParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,30 @@ public class Tests {
 
 
     /**
+     * This test attempts to parse an invalid game string. We expect the frame count to be 8 (less than a full game)
+     * and the game to be invalid
+     */
+    @Test
+    public void gameParsing() {
+        try {
+            Game game = GameParser.parse("X|11|36|45|X|71|4/|36|7/");
+
+            // the parse will fail to add the last frame (7/) because no frame boundary was reached.
+            // Expect to have 8 frames total.
+            Assertions.assertEquals(game.getFrames().size(), 8);
+            Assertions.assertFalse(game.isValid());
+        } catch (GameParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * Test entry for games I have generated, verifying the scores with online bowling calculators
      * (which I guess assumes those were also correct)
      */
     @Test
-    public void myGames() {
+    public void myGames() throws GameParseException {
         for (Map.Entry<String, Integer> test : GAMES.entrySet()) {
             final Game game = GameParser.parse(test.getKey());
             final int score = game.calculateScore();
@@ -44,7 +64,7 @@ public class Tests {
      * Test entry for all strike game
      */
     @Test
-    public void allStrikeTest() {
+    public void allStrikeTest() throws GameParseException {
         final Game game = GameParser.parse("X|X|X|X|X|X|X|X|X|X||XX");
         Assertions.assertEquals(game.calculateScore(), ALL_STRIKE_SCORE);
     }
@@ -53,7 +73,7 @@ public class Tests {
      * Test entry for all five spares game.
      */
     @Test
-    public void fiveSpares() {
+    public void fiveSpares() throws GameParseException {
         final Game game = GameParser.parse("5/|5/|5/|5/|5/|5/|5/|5/|5/|5/||5");
         Assertions.assertEquals(game.calculateScore(), ALL_FIVE_SPARES);
     }
@@ -62,7 +82,7 @@ public class Tests {
      * Test entry for all nines
      */
     @Test
-    public void allNines() {
+    public void allNines() throws GameParseException {
         final Game game = GameParser.parse("9-|9-|9-|9-|9-|9-|9-|9-|9-|9-|");
         Assertions.assertEquals(game.calculateScore(), ALL_NINES);
     }
@@ -71,7 +91,7 @@ public class Tests {
      * Test entry for the game provided in the word document sheet
      */
     @Test
-    public void providedGame() {
+    public void providedGame() throws GameParseException {
         final Game game = GameParser.parse("X|7/|9-|X|-8|8/|-6|X|X|X||81");
         Assertions.assertEquals(game.calculateScore(), PROVIDED_EXAMPLE_GAME);
     }

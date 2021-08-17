@@ -16,6 +16,24 @@ The count flag is optional and defaults to `10,000` test cases.
 
 The second is the main code & unit tests which implement the necessary code.
 
+To build and run this part of the code:
+
+`./gradlew build` 
+
+to build the JAR file. The JAR file will be located in the `build/libs/` directory.
+
+The way the program works is it reads from standard/common input (STDIN).
+
+You can pass files or strings to the program through pipes:
+
+File:
+
+`cat tests.txt | java -jar build/libs/bowling-1.0-SNAPSHOT.jar`
+
+String:
+
+`echo "5-|X|3/|36|42|X|81|X|45|18||" | java -jar build/libs/bowling-1.0-SNAPSHOT.jar`
+
 ### Objective
 `Write a program to score a game of Ten-Pin Bowling.`
 ```
