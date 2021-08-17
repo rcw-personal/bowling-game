@@ -1,4 +1,4 @@
-Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg) ![test status](https://github.com/rbrick/bowling-game/actions/workflows/test.yml/badge.svg)
+Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg) ![test status](https://github.com/rbrick/bowling-game/actions/workflows/test.yml/badge.svg) ![language](https://img.shields.io/badge/16-%23ED8B00.svg?style=flat&logo=java&logoColor=white&label=Java)
 --
 
 ## NOTE: This uses Java 16 language features
