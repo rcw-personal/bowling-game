@@ -17,4 +17,12 @@ public class Turn {
     public int getPinsHit() {
         return pinsHit;
     }
+
+    @Override
+    public String toString() {
+        return "Turn{" +
+                "result=" + result +
+                ", pinsHit=" + pinsHit +
+                '}';
+    }
 }

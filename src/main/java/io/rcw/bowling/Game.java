@@ -1,12 +1,17 @@
 package io.rcw.bowling;
 
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Game represents a played game.
  */
 public final class Game {
+    private static final int TEN_PINS = 10;
+    private static final int MAX_SCORE = 300;
+
+    private static final int MAX_FRAMES = 10;
+
+
     // These are the list
     private final List<Frame> frames;
 
@@ -14,32 +19,35 @@ public final class Game {
         this.frames = frames;
     }
 
-    public int calculateScore(int numberOfFrames) {
-        if (numberOfFrames == -1) {
-            numberOfFrames = frames.size();
+    public int calculateScore() {
+        if (frames.stream().allMatch(Frame::isStrike)) {
+            return  MAX_SCORE;
         }
 
         int score = 0;
-        int lastStrike = 0;
-        Turn lastTurn = null;
-        for (int i = 0; i < numberOfFrames; i++) {
+
+        for (int i = 0; i < MAX_FRAMES; i++) {
             Frame frame = frames.get(i);
-            int localScore = 0;
 
-            for (Turn turn : frame.turns()) {
-                if (turn.getResult() == Result.STRIKE) {
+            int localScore = frame.score();
 
-                } else if (turn.getResult() == Result.SPARE) {
-                    localScore = 10;
-                } else if (turn.getResult() == Result.SCORE) {
-                    localScore += turn.getPinsHit();
+            if (frame.isStrike() || frame.isSpare() && i == MAX_FRAMES-1) {
+                if (frame.isStrike()) {
+                    localScore += frame.score() - TEN_PINS;
+                }
+            }
+            if (i > 0) {
+                Frame previous = this.frames.get(i - 1);
+                if (previous.isSpare()) {
+                    localScore += frame.turns().get(0).getPinsHit();
+                } else if (previous.isStrike()) {
+                    localScore += frame.score();
                 }
             }
 
             score += localScore;
 
             System.out.println("Frame: " + (i + 1) + ", frame score: " + localScore + ", current score: " + score);
-            lastTurn = frame.turns().get(frame.turns().size() - 1);
         }
         return score;
     }

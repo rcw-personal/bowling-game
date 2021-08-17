@@ -11,6 +11,8 @@ public final class GameParser {
         Frame currentFrame = new Frame();
         Turn lastTurn = null;
 
+        boolean bonus = false;
+
         for (int i = 0; i < line.length(); i++) {
             char at = line.charAt(i); // get the current character at the index i
 
@@ -29,29 +31,33 @@ public final class GameParser {
                     }
                 }
                 case '|' -> {
-
                     if (i+1<line.length() && line.charAt(i + 1) == '|') {
                         // bonus, stay in frame
-                        continue;
+                        bonus = true;
+                        frames.add(currentFrame);
                     }
-                    // add the last frame
-                    frames.add(currentFrame);
-                    // create a new frame
-                    currentFrame = new Frame();
-                    lastTurn = null;
+
+                    if (!bonus) {
+                        // add the last frame
+                        frames.add(currentFrame);
+                        // create a new frame
+                        currentFrame = new Frame();
+                        lastTurn = null;
+                    }
                     continue;
                 }
-                case '-' -> {
-                    result = Result.MISS;
-                    pinsHit = 0;
-                }
+                case '-' -> result = Result.MISS;
                 default -> {
                     pinsHit = Integer.parseInt(String.valueOf(at));
                     result = Result.SCORE;
                 }
             }
 
+
             currentFrame.addTurn(lastTurn = new Turn(result, pinsHit));
+
+            System.out.println("frame size " +  currentFrame.turns().size());
+
         }
 
         return new Game(frames);
