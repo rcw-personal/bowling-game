@@ -1,7 +1,7 @@
 Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg) ![test status](https://github.com/rbrick/bowling-game/actions/workflows/test.yml/badge.svg)
 --
 
-##NOTE: This uses Java 16 language features
+## NOTE: This uses Java 16 language features
 
 ### About 
 This repository contains two components. A Gradle plugin which contains a task 
