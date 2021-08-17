@@ -1,4 +1,4 @@
-Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg)
+Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg)![test status](https://github.com/rbrick/bowling-game/actions/workflows/test.yml/badge.svg)
 --
 
 This is my repository for the bowling game coding assessment at High5Games.
