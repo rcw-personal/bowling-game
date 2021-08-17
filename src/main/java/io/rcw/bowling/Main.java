@@ -2,11 +2,8 @@ package io.rcw.bowling;
 
 import java.io.InputStreamReader;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 public class Main {
-    private static final Logger LOGGER = Logger.getLogger("Bowling Game");
-
     public static void main(String[] args) {
         //Read from STDIN
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
