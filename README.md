@@ -1,8 +1,6 @@
 Bowling Game ![build status](https://github.com/rbrick/bowling-game/actions/workflows/build.yml/badge.svg) ![test status](https://github.com/rbrick/bowling-game/actions/workflows/test.yml/badge.svg)
 --
 
-This is my repository for the bowling game coding assessment at High5Games.
-
 ### About 
 This repository contains two components. A Gradle plugin which contains a task 
 to generate test cases, according to the specification.
