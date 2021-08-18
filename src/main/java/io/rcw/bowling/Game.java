@@ -1,6 +1,7 @@
 package io.rcw.bowling;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -8,13 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class Game {
 
-    private static final int TEN_PINS = 10;
-    private static final int MAX_SCORE = 300;
-
+    /**
+     * The max number of frames a game could have
+     */
     private static final int MAX_FRAMES = 10;
 
-
-    // These are the list
+    // These are the list of frames for the game
     private final List<Frame> frames;
 
     public Game(List<Frame> frames) {
@@ -32,49 +32,81 @@ public final class Game {
     }
 
     /**
-     * Gets frames
+     * Gets the list of frames within the game
+     *
      * @return the frames from the game
      */
     public List<Frame> getFrames() {
         return frames;
     }
 
+
+    /**
+     * Calculates the score of this game according to the rules of Ten Pin bowling
+     *
+     * @return The calculated score
+     */
     public int calculateScore() {
         int score = 0;
 
         for (int i = 0; i < MAX_FRAMES; i++) {
             Frame frame = frames.get(i);
-            final AtomicInteger localScore = new AtomicInteger(0);
+            // Start with a local score that we add to, this would be the frames total score
+            final AtomicInteger localScore = new AtomicInteger(frame.score());
 
-            // The last frame is a simple sum of the pins knocked down.
-            if (i == MAX_FRAMES - 1) {
-                localScore.addAndGet(frame.score());
-            } else {
-                localScore.addAndGet(frame.score());
+            // Check if this frame is a strike
+            if (frame.isStrike()) {
+                // Get the next frame, if available
+                frame.next().ifPresent(next -> {
+                    // Add to the score the next two scores.
+                    // If it is a strike, it will only have 1 turn, but it will still work
+                    // since 2 is the max limit
+                    localScore.addAndGet(next.limitScore(2));
 
-                if (frame.isStrike()) {
-                    frame.next().ifPresent(next -> {
-                        localScore.addAndGet(next.limitScore(2));
+                    // If the next frame is also a strike, we must calculate it accordingly
+                    if (next.isStrike()) {
+                        // Again, check if next's next frame is present
+                        next.next().ifPresent(nextTwo -> {
+                            // If this is a spare, calculate as a spare, add only the next
+                            if (nextTwo.isSpare()) {
+                                localScore.addAndGet(
+                                        nextTwo.turns().get(0).getPinsHit());
+                            } else {
+                                // Add the score normally, without any bonus frames though.
+                                localScore.addAndGet(nextTwo.score(Frame.NO_BONUS));
+                            }
+                        });
 
-                        if (next.isStrike()) {
-                            next.next().ifPresent(nextTwo -> {
-                                if (nextTwo.isSpare()) {
-                                    localScore.addAndGet(
-                                            nextTwo.turns().get(0).getPinsHit());
-                                } else {
-                                    localScore.addAndGet(nextTwo.score(turn -> !turn.isBonus()));
-                                }
-                            });
-
-                        }
-                    });
-                } else if (frame.isSpare()) {
-                    frame.next().ifPresent((next) -> localScore.addAndGet(next.turns().get(0).getPinsHit()));
-                }
+                    }
+                });
+            } else if (frame.isSpare()) {
+                // Fhe frame was a spare, so add the next's frames first turn/throw
+                frame.next().ifPresent((next) -> localScore.addAndGet(next.turns().get(0).getPinsHit()));
             }
 
+            // Finally, compound the current score, with our local
             score += localScore.get();
         }
         return score;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "frames=" + frames +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Game game = (Game) o;
+        return Objects.equals(frames, game.frames);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(frames);
     }
 }

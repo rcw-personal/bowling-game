@@ -6,10 +6,23 @@ import java.util.List;
 public final class GameParser {
 
     /**
-     * This function parses a Game
-     * @param line
-     * @return
-     * @throws GameParseException
+     * This function parses the specified game format provided into a Game object we can interact with.
+     *
+     * The format specified follows these rules:
+     *
+     * | = a frame boundary
+     * || = a bonus frame boundaries
+     * / = a spare
+     * X = a strike
+     * - = a miss
+     * 1-9 = regular scores, parsed as integers.
+     *
+     * It is parsed in a linear manner
+     *
+     * @param line The string to parse
+     * @return A Game that we may use to calculate the score, check validity of a game or frame within the game.
+     *
+     * @throws GameParseException if we come across an invalid character, like 'A', which cannot be parsed
      */
     public static Game parse(String line) throws GameParseException {
         List<Frame> frames = new ArrayList<>();
@@ -20,7 +33,7 @@ public final class GameParser {
         boolean bonus = false;
 
         for (int i = 0; i < line.length(); i++) {
-            char at = line.charAt(i); // get the current character at the index i
+            char at = line.charAt(i); // Get the current character at the index i
 
             Result result;
             int pinsHit = 0;

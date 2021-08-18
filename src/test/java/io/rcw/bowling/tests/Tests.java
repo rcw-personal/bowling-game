@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Tests {
 
@@ -32,7 +30,7 @@ public class Tests {
      * and the game to be invalid
      */
     @Test
-    public void gameParsing() {
+    public void testGameParser() {
         try {
             Game game = GameParser.parse("X|11|36|45|X|71|4/|36|7/");
 
@@ -51,7 +49,7 @@ public class Tests {
      * (which I guess assumes those were also correct)
      */
     @Test
-    public void myGames() throws GameParseException {
+    public void testGames() throws GameParseException {
         for (Map.Entry<String, Integer> test : GAMES.entrySet()) {
             final Game game = GameParser.parse(test.getKey());
             final int score = game.calculateScore();
@@ -64,7 +62,7 @@ public class Tests {
      * Test entry for all strike game
      */
     @Test
-    public void allStrikeTest() throws GameParseException {
+    public void testAllStrikes() throws GameParseException {
         final Game game = GameParser.parse("X|X|X|X|X|X|X|X|X|X||XX");
         Assertions.assertEquals(game.calculateScore(), ALL_STRIKE_SCORE);
     }
@@ -73,7 +71,7 @@ public class Tests {
      * Test entry for all five spares game.
      */
     @Test
-    public void fiveSpares() throws GameParseException {
+    public void testFiveSpares() throws GameParseException {
         final Game game = GameParser.parse("5/|5/|5/|5/|5/|5/|5/|5/|5/|5/||5");
         Assertions.assertEquals(game.calculateScore(), ALL_FIVE_SPARES);
     }
@@ -82,7 +80,7 @@ public class Tests {
      * Test entry for all nines
      */
     @Test
-    public void allNines() throws GameParseException {
+    public void testAllNines() throws GameParseException {
         final Game game = GameParser.parse("9-|9-|9-|9-|9-|9-|9-|9-|9-|9-|");
         Assertions.assertEquals(game.calculateScore(), ALL_NINES);
     }
@@ -91,7 +89,7 @@ public class Tests {
      * Test entry for the game provided in the word document sheet
      */
     @Test
-    public void providedGame() throws GameParseException {
+    public void testProvidedGame() throws GameParseException {
         final Game game = GameParser.parse("X|7/|9-|X|-8|8/|-6|X|X|X||81");
         Assertions.assertEquals(game.calculateScore(), PROVIDED_EXAMPLE_GAME);
     }
